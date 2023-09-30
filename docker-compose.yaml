@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: .docker/rabbitmq/Dockerfile
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=pass
+    networks:
+        - lead_network
+
+  prometheus:
+    build:
+      context: .
+      dockerfile: .docker/prometheus/Dockerfile
+    container_name: prometheus
+    ports:
+      - '9090:9090'
+    networks:
+        - lead_network
+  
+  grafana:
+    build:
+      context: .
+      dockerfile: .docker/grafana/Dockerfile
+    container_name: grafana
+    environment:
+      - ENV GF_SECURITY_ADMIN_USER=admin
+      - ENV GF_SECURITY_ADMIN_PASSWORD=passw0rd
+      - ENV GF_USERS_DEFAULT_THEME=dark
+      - ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - ENV GF_USERS_ALLOW_SIGN_UP=false
+      - ENV GF_AUTH_ANONYMOUS_ENABLED=true
+    ports:
+      - "3001:3000"
+    networks:
+      - lead_network
+
+networks:
+  lead_network:
+    external: true
+    driver: bridge

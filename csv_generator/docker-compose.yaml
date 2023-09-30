@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  llm-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - './:/app:rw'
+    env_file:
+      - .env
+    networks:
+      - lead_network
+    
+networks:
+  lead_network:
+    external: true
